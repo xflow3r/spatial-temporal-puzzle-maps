@@ -7,7 +7,7 @@ def load_dataset(print_dataset=False, save_processed=True):
         print(df.head().to_string())
 
     # Filter to 2004-2020 only
-    df = df[(df["Year"] >= 2004) & (df["Year"] <= 2020)]
+    df = df[(df["Year"] > 2004) & (df["Year"] <= 2020)]
 
     if save_processed:
         df.to_csv("cancerData/cancer_data_2004_2020.csv", index=False)
