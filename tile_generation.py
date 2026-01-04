@@ -353,9 +353,9 @@ def correct_tile_positions(initial_tiles, geojson_path, output_dir):
             region_tiles = np.array(corrected_tiles[region_name]['tiles'])
 
             if region_name == 'alaska':
-                shift = np.array([offset_row, -(offset_col // 2)])
+                shift = np.array([offset_row-9, -(offset_col-24 // 2)])
             else:
-                shift = np.array([offset_row + 2, offset_col - 15])  # Move Hawaii 5 tiles to the left
+                shift = np.array([offset_row-4, offset_col - 17])
 
             shifted_tiles = (region_tiles + shift).astype(int).tolist()
             corrected_tiles[region_name]['tiles'] = shifted_tiles
