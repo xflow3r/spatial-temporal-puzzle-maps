@@ -1,7 +1,7 @@
 import pandas as pd
 
 def load_dataset(print_dataset=False):
-    df = pd.read_csv("United_States_Cancer_Statistics_1999_to_2021_Mortality.csv")
+    df = pd.read_csv("cancerData/United_States_Cancer_Statistics_1999_to_2021_Mortality.csv")
 
     if print_dataset:
         print(df.head().to_string())
