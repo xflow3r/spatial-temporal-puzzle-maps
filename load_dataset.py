@@ -6,15 +6,10 @@ def load_dataset(print_dataset=False):
     if print_dataset:
         print(df.head().to_string())
 
-    # --- CHANGE THESE if your CSV uses different names ---
-    year_col = "Year"
-    deaths_col = "Deaths"   # or "Death Count", etc.
-    # -----------------------------------------------------
-
-    # Group by state + code, then build year->deaths map
+    # Group by state + code, then build year -> deaths map
     grouped = (
-        df.groupby(["State", "State_numerical"])[[year_col, deaths_col]]
-          .apply(lambda g: dict(zip(g[year_col], g[deaths_col])))
+        df.groupby(["State", "State_numerical"])[["Year", "Deaths"]]
+          .apply(lambda g: dict(zip(g["Year"], g["Deaths"])))
           .reset_index(name="deaths_by_year")
     )
 
