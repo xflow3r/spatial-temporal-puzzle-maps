@@ -32,7 +32,7 @@ def get_connection_point_offset(connection_type):
         return 0.5
 
 
-def create_puzzle_piece(piece, pieces, index, piece_size, offset_x, offset_y):
+def create_puzzle_piece(piece, pieces, index, piece_size, offset_x, offset_y, show_year=False):
     row, col = piece["grid_position"]
 
     # Top-left corner of the cell (same layout you already use)
@@ -73,30 +73,28 @@ def create_puzzle_piece(piece, pieces, index, piece_size, offset_x, offset_y):
         showlegend=False,
     )
 
-    # Label only for the first year (timeline start)
+    # Label for years (controlled by show_year parameter)
     cx = x0 + piece_size / 2
     cy = y0 + piece_size / 2
-    if index == 0:
+
+    if show_year:
         text = go.Scatter(
             x=[cx],
             y=[cy],
             mode="text",
             text=[str(piece["year"])],
-            textfont=dict(size=6, color="white"),
+            textfont=dict(size=10, color="white"),
             showlegend=False,
             hoverinfo="skip",
-            name="",  # ← important
-            legendgroup=None  # ← important
         )
     else:
         text = go.Scatter(
             x=[cx],
             y=[cy],
-            showlegend=False,
             mode="text",
             text="",
-            name="",  # ← important
-            legendgroup=None  # ← important
+            showlegend=False,
+            hoverinfo="skip",
         )
 
     return [poly, text]
@@ -211,7 +209,6 @@ def create_detail_view(state_name, puzzle_data):
     if not puzzle_data:
         return None
 
-    detail_shapes = []
     shapes = []
 
     offset_x = 50
@@ -220,10 +217,10 @@ def create_detail_view(state_name, puzzle_data):
 
     pieces = puzzle_data["pieces"]
     for i, piece in enumerate(pieces):
-        piece_shapes = create_puzzle_piece(piece, pieces, i, detail_piece_size, offset_x, offset_y)
+        piece_shapes = create_puzzle_piece(piece, pieces, i, detail_piece_size, offset_x, offset_y, show_year=True)
         shapes.extend(piece_shapes)
 
-    fig = go.Figure(data=detail_shapes)
+    fig = go.Figure(data=shapes)
 
     fig.update_layout(
         showlegend=False,
@@ -243,6 +240,12 @@ def create_detail_view(state_name, puzzle_data):
     - Max: {stats['max']} deaths
     - Mean: {stats['mean']} deaths
     - Trend: {stats['trend']}
+
+    **Connection Positioning:**
+    The position of jigsaw tabs/sockets shifts based on data trend:
+    - Inner boundary: Data increasing
+    - Middle: Data stable
+    - Outer boundary: Data decreasing
     """
 
     return html.Div([

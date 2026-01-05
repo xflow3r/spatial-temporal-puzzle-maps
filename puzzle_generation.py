@@ -31,26 +31,28 @@ def normalize_value_to_color(value, min_val, max_val, color_scheme):
 
 
 def get_perimeter_positions(grid_size=5):
+    """
+    Generate positions going clockwise around the perimeter starting from top-left.
+    For a 5x5 grid (indices 0-4):
+    Start at (0,0) top-left, go right along top, down right side, left along bottom, up left side.
+    """
     positions = []
-    positions.append((grid_size - 1, 0))
 
-    for row in range(grid_size - 2, 0, -1):
-        positions.append((row, grid_size - 1))
-
-    positions.append((0, grid_size - 1))
-
-    for col in range(grid_size - 2, 0, -1):
+    # Top row: left to right (0,0) to (0,4)
+    for col in range(grid_size):
         positions.append((0, col))
 
-    positions.append((0, 0))
+    # Right column: top to bottom (1,4) to (4,4), skip (0,4) already added
+    for row in range(1, grid_size):
+        positions.append((row, grid_size - 1))
 
-    for row in range(1, grid_size - 1):
-        positions.append((row, 0))
-
-    for col in range(1, grid_size - 1):
+    # Bottom row: right to left (4,3) to (4,0), skip (4,4) already added
+    for col in range(grid_size - 2, -1, -1):
         positions.append((grid_size - 1, col))
 
-    positions.append((grid_size - 1, grid_size - 1))
+    # Left column: bottom to top (3,0) to (1,0), skip (4,0) and (0,0) already added
+    for row in range(grid_size - 2, 0, -1):
+        positions.append((row, 0))
 
     return positions
 
