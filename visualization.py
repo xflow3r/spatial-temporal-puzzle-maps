@@ -92,6 +92,7 @@ def create_puzzle_piece(piece, pieces, index, piece_size, offset_x, offset_y):
         text = go.Scatter(
             x=[cx],
             y=[cy],
+            showlegend=False,
             mode="text",
             text="",
             name="",  # ← important
