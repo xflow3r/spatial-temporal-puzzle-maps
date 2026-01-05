@@ -5,14 +5,17 @@ from typing import Dict, List, Tuple, Any
 
 def create_color_scheme(n_classes=7):
     colors = [
-        "#f2f0f7",
-        "#dadaeb",
-        "#bcbddc",
-        "#9e9ac8",
-        "#807dba",
-        "#6a51a3",
-        "#4a1486"
+        "#f5e6ed",
+        "#fbc5c3",
+        "#f89eb9",
+        "#f469a1",
+        "#d93798",
+        "#ad037d",
+        "#7a0477",
+        "#48036a",
+        "#bab0bc"
     ]
+
     return colors[:n_classes]
 
 
@@ -75,10 +78,8 @@ def select_years_for_pieces(years_data, n_pieces=16):
         return sorted_years[:n_pieces]
 
 
-def create_puzzle_for_state(state_data, tilemap_position,
-                            global_min, global_max, color_scheme):
-    state_name = state_data['State']
-    deaths_by_year = state_data['deaths_by_year']
+def create_puzzle_for_state(state_data, tilemap_position, global_min, global_max, color_scheme):
+    deaths_by_year = state_data["metrics"]["death_rate_by_year"]
 
     selected_years = select_years_for_pieces(deaths_by_year, n_pieces=16)
     perimeter_positions = get_perimeter_positions(grid_size=5)
@@ -140,7 +141,7 @@ def generate_puzzle_tiles(cancer_data_path="cancerData/cancer_data_2004_2020.csv
 
     all_values = []
     for state_data in cancer_data:
-        all_values.extend(state_data['deaths_by_year'].values())
+        all_values.extend(state_data["metrics"]["death_rate_by_year"].values())
 
     global_min = min(all_values)
     global_max = max(all_values)
