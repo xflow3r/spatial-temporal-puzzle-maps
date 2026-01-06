@@ -104,7 +104,7 @@ def create_puzzle_piece(piece, pieces, index, piece_size, offset_x, offset_y, sh
         fillcolor=piece["color"],
         line=dict(color="white", width=1),
         mode="lines",
-        text=f"Year: {piece['year']}<br>Deaths: {piece['value']}<br>Change: {piece['change_rate'] * 100 if piece['change_rate'] else 0:.1f}%",
+        text=f"Year: {piece['year']}<br>Death Rate: {piece['value']:.1f} per 100k<br>Change: {piece['change_rate'] * 100 if piece['change_rate'] else 0:.1f}%",
         hovertemplate="%{text}<extra></extra>",
         hoveron="fills",
         showlegend=False,
@@ -223,7 +223,7 @@ def create_color_legend(puzzle_tiles):
         )
 
     return html.Div([
-        html.H4("Deaths per Year", style={'fontSize': '18px', 'marginBottom': '15px'}),
+        html.H4("Death Rate per 100k", style={'fontSize': '18px', 'marginBottom': '15px'}),
         html.Div(legend_items)
     ], style={
         'position': 'absolute',
@@ -293,18 +293,18 @@ def create_detail_view(state_name, puzzle_data):
 
     stats = puzzle_data['stats']
     stats_text = f"""
-    **Statistics:**
-    - Min: {stats['min']} deaths
-    - Max: {stats['max']} deaths
-    - Mean: {stats['mean']} deaths
-    - Trend: {stats['trend']}
+        **Statistics (Death Rate per 100k):**
+        - Min: {stats['min']:.1f}
+        - Max: {stats['max']:.1f}
+        - Mean: {stats['mean']:.1f}
+        - Trend: {stats['trend']}
 
-    **Connection Positioning:**
-    The position of jigsaw tabs/sockets shifts based on data trend:
-    - Inner boundary: Data increasing
-    - Middle: Data stable
-    - Outer boundary: Data decreasing
-    """
+        **Connection Positioning:**
+        The position of jigsaw tabs/sockets shifts based on data trend:
+        - Inner boundary: Data increasing
+        - Middle: Data stable
+        - Outer boundary: Data decreasing
+        """
 
     return html.Div([
         html.Div([
