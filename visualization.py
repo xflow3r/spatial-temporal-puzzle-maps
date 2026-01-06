@@ -104,13 +104,11 @@ def create_puzzle_piece(piece, pieces, index, piece_size, offset_x, offset_y, sh
         fillcolor=piece["color"],
         line=dict(color="white", width=1),
         mode="lines",
-        hoverinfo="text",
-        hovertext=(
-            f"Year: {piece['year']}<br>"
-            f"Deaths: {piece['value']}<br>"
-            f"Change: {piece['change_rate'] * 100 if piece['change_rate'] else 0:.1f}%"
-        ),
+        text=f"Year: {piece['year']}<br>Deaths: {piece['value']}<br>Change: {piece['change_rate'] * 100 if piece['change_rate'] else 0:.1f}%",
+        hovertemplate="%{text}<extra></extra>",
+        hoveron="fills",
         showlegend=False,
+        name=""
     )
 
     # Label for years (controlled by show_year parameter)
@@ -151,10 +149,10 @@ def create_tile(state_name, puzzle_data, tile_row, tile_col):
         mode='text',
         text=[state_name],
         textfont=dict(size=10, color='black', family='Arial Black'),
-        hoverinfo='text',
-        hovertext=f"{state_name}<br>Click for details",
+        hovertemplate=f"{state_name}<br>Click for details<extra></extra>",
         showlegend=False,
-        customdata=[[state_name]]
+        customdata=[[state_name]],
+        name=""
     )
     shapes.append(text)
 
@@ -165,10 +163,12 @@ def create_tile(state_name, puzzle_data, tile_row, tile_col):
         fillcolor='rgba(0,0,0,0)',
         line=dict(color='rgba(0,0,0,0)', width=0),
         mode='lines',
-        hoverinfo='text',
-        hovertext=f"{state_name}<br>Click for details",
+        text=f"{state_name}<br>Click for details",
+        hovertemplate="%{text}<extra></extra>",
+        hoveron="fills",
         showlegend=False,
-        customdata=[[state_name]]
+        customdata=[[state_name]],
+        name=""
     )
     shapes.append(invisible_rect)
 
