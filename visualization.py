@@ -32,30 +32,70 @@ def get_connection_point_offset(connection_type):
         return 0.5
 
 
+def get_edge_midpoint_and_offset(piece1, piece2, piece_size, offset_x, offset_y):
+    """
+    Calculate the midpoint of the edge between two adjacent pieces and apply offset based on connection type.
+    Returns (x, y) coordinates for the connection point marker.
+    """
+    row1, col1 = piece1["grid_position"]
+    row2, col2 = piece2["grid_position"]
+
+    # Calculate piece centers
+    x1 = offset_x + col1 * piece_size + piece_size / 2
+    y1 = offset_y + row1 * piece_size + piece_size / 2
+    x2 = offset_x + col2 * piece_size + piece_size / 2
+    y2 = offset_y + row2 * piece_size + piece_size / 2
+
+    # Get the connection type (this is stored in piece2)
+    connection_type = piece2.get("connection_point", "middle")
+    offset_factor = get_connection_point_offset(connection_type)
+
+    # Calculate the edge midpoint between the two pieces
+    edge_x = (x1 + x2) / 2
+    edge_y = (y1 + y2) / 2
+
+    # Calculate the direction perpendicular to the edge
+    edge_dx = x2 - x1
+    edge_dy = y2 - y1
+
+    # Perpendicular vector (rotated 90 degrees)
+    perp_dx = -edge_dy
+    perp_dy = edge_dx
+
+    # Normalize the perpendicular vector
+    length = (perp_dx ** 2 + perp_dy ** 2) ** 0.5
+    if length > 0:
+        perp_dx /= length
+        perp_dy /= length
+
+    # Apply offset along the perpendicular direction
+    # Offset range: -piece_size/4 to +piece_size/4
+    # inner (0.3) -> negative offset (toward inner)
+    # middle (0.5) -> zero offset
+    # outer (0.7) -> positive offset (toward outer)
+    offset_distance = (offset_factor - 0.5) * piece_size / 0.7
+
+    final_x = edge_x + perp_dx * offset_distance
+    final_y = edge_y + perp_dy * offset_distance
+
+    return final_x, final_y
+
+
+
 def create_puzzle_piece(piece, pieces, index, piece_size, offset_x, offset_y, show_year=False):
     row, col = piece["grid_position"]
 
-    # Top-left corner of the cell (same layout you already use)
+    # Top-left corner of the cell
     x0 = offset_x + col * piece_size
     y0 = offset_y + row * piece_size
 
-    edge_kinds = piece_edge_kinds_for_timeline(pieces, index)
+    # Create simple rectangle
+    x1 = x0 + piece_size
+    y1 = y0 + piece_size
 
-    params = JigsawParams(
-        piece_size=piece_size,
-        tab_radius=piece_size * 0.16,
-        tab_offset=piece_size * 0.18,
-        samples_per_arc=10,
-    )
-
-    pts = jigsaw_polygon_points(
-        top_left_x=x0,
-        top_left_y=y0,
-        piece_size=piece_size,
-        edge_kinds=edge_kinds,
-        params=params,
-    )
-    xs, ys = polygon_xy(pts)
+    # Rectangle corners
+    xs = [x0, x1, x1, x0, x0]
+    ys = [y0, y0, y1, y1, y0]
 
     poly = go.Scatter(
         x=xs,
@@ -87,17 +127,9 @@ def create_puzzle_piece(piece, pieces, index, piece_size, offset_x, offset_y, sh
             showlegend=False,
             hoverinfo="skip",
         )
+        return [poly, text]
     else:
-        text = go.Scatter(
-            x=[cx],
-            y=[cy],
-            mode="text",
-            text="",
-            showlegend=False,
-            hoverinfo="skip",
-        )
-
-    return [poly, text]
+        return [poly]
 
 
 def create_tile(state_name, puzzle_data, tile_row, tile_col):
@@ -219,6 +251,32 @@ def create_detail_view(state_name, puzzle_data):
     for i, piece in enumerate(pieces):
         piece_shapes = create_puzzle_piece(piece, pieces, i, detail_piece_size, offset_x, offset_y, show_year=True)
         shapes.extend(piece_shapes)
+
+        # Add connection point markers between adjacent pieces
+        for i in range(1, len(pieces)):
+            prev_piece = pieces[i - 1]
+            curr_piece = pieces[i]
+
+            # Calculate position for connection point marker
+            marker_x, marker_y = get_edge_midpoint_and_offset(
+                prev_piece, curr_piece, detail_piece_size, offset_x, offset_y
+            )
+
+            # Create the connection point marker
+            connection_marker = go.Scatter(
+                x=[marker_x],
+                y=[marker_y],
+                mode='markers',
+                marker=dict(
+                    size=8,
+                    color='white',
+                    symbol='circle',
+                    line=dict(color='black', width=1)
+                ),
+                hoverinfo='text',
+                showlegend=False
+            )
+            shapes.append(connection_marker)
 
     fig = go.Figure(data=shapes)
 
