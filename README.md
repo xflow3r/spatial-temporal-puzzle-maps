@@ -13,7 +13,7 @@ This project implements an automatic generation system for puzzle tile maps to v
 
 ## Demo & Resources
 
-- **Live Demo**: https://xflower.eu.pythonanywhere.com/(https://xflower.eu.pythonanywhere.com/) <!-- Add your deployment URL here -->
+- **Live Demo**: https://xflower.eu.pythonanywhere.com/
 - **Reference Paper**: Lin et al. (2019) - "Automatic generation of puzzle tile maps for spatial-temporal data visualization"
 
 ## Features
