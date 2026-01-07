@@ -26,14 +26,11 @@ def run_pipeline():
         print(f"Error in puzzle generation: {e}")
         return False
 
-    print("Pipeline complete. Starting server")
+    print("Pipeline complete. Starting server at http://localhost:8050")
 
     try:
         from visualization import app
-        # Get port from environment variable (for deployment) or use 8050 locally
-        port = int(os.environ.get('PORT', 8050))
-        # host 0.0.0.0 allows external connections (needed for deployment)
-        app.run(debug=False, host='0.0.0.0', port=port)
+        app.run(debug=False, port=8050)
     except KeyboardInterrupt:
         print("\nServer stopped")
     except Exception as e:
