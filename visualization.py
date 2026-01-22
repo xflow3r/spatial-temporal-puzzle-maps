@@ -2,12 +2,7 @@ import json
 import dash
 from dash import dcc, html, Input, Output, State
 import plotly.graph_objects as go
-from jigsaw_tiles import (
-    JigsawParams,
-    jigsaw_polygon_points,
-    piece_edge_kinds_for_timeline,
-    polygon_xy,
-)
+
 
 
 TILE_SIZE = 120
